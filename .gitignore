@@ -1,0 +1,15 @@
+# 原始資料（約 150 MB，用 notebook 開頭的 kaggle 指令下載）
+data/
+
+# notebook 產生的大檔（可重新產生）
+outputs/*.joblib
+outputs/submission_flood.csv
+outputs/*.zip
+
+# 課程頁面原檔（含 LMS 驗證參數，不公開）
+readme.html
+
+# 測試暫存
+web/tests/_*
+__pycache__/
+.ipynb_checkpoints/

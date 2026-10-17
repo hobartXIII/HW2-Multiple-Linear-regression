@@ -1,0 +1,131 @@
+/* ============================================================
+   日式色票：以 RGB 三元組定義，供 Tailwind 的 rgb(var(--x) / α) 使用
+   日間：生成り底、墨色字、藍鼠主色；夜間：濡羽色底、生成り字
+   ============================================================ */
+:root {
+  --bg: 250 248 245;      /* 生成り色 #FAF8F5 */
+  --card: 255 255 255;    /* 卡片 #FFFFFF */
+  --line: 232 228 222;    /* 細邊框 #E8E4DE */
+  --ink: 43 43 43;        /* 墨色 #2B2B2B */
+  --muted: 125 120 112;   /* 次要文字（暖灰） */
+  --soft: 244 241 236;    /* 淡底色（hover、表頭） */
+  --ai: 123 144 166;      /* 藍鼠 #7B90A6 */
+  --matcha: 138 154 91;   /* 抹茶 #8A9A5B */
+  --sakura: 232 196 196;  /* 櫻色 #E8C4C4 */
+  --beni: 190 128 128;    /* 深櫻（櫻色在白底上太淡時使用：資料點、負係數） */
+  color-scheme: light;
+}
+
+.dark {
+  --bg: 28 31 36;         /* 濡羽色 #1C1F24 */
+  --card: 37 41 48;       /* #252930 */
+  --line: 53 58 66;       /* #353A42 */
+  --ink: 234 230 223;     /* 生成り #EAE6DF */
+  --muted: 160 155 146;
+  --soft: 45 50 58;
+  --ai: 159 177 196;      /* 淺藍鼠 #9FB1C4 */
+  --matcha: 168 184 122;  /* 淡抹茶 #A8B87A */
+  --sakura: 217 169 169;  /* 淡櫻 #D9A9A9 */
+  --beni: 217 169 169;
+  color-scheme: dark;
+}
+
+body { background: rgb(var(--bg)); color: rgb(var(--ink)); letter-spacing: 0.02em; }
+
+/* ---------- 版面元件 ---------- */
+.page-title { font-family: "Noto Serif TC", serif; font-size: 1.75rem; font-weight: 500; letter-spacing: 0.12em; margin-top: 0.25rem; }
+.eyebrow { font-size: 11px; letter-spacing: 0.25em; color: rgb(var(--muted)); text-transform: uppercase; }
+
+.card {
+  background: rgb(var(--card));
+  border: 1px solid rgb(var(--line));
+  border-radius: 0.375rem;              /* rounded-md */
+  padding: 1.75rem;
+}
+@media (max-width: 640px) { .card { padding: 1.25rem; } }
+
+.card-title {
+  font-family: "Noto Serif TC", serif; font-size: 1rem; font-weight: 500; letter-spacing: 0.12em;
+  margin-bottom: 1.25rem; display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.25rem 0.75rem;
+}
+.card-sub { font-family: "Noto Sans TC", sans-serif; font-size: 0.75rem; color: rgb(var(--muted)); letter-spacing: 0.04em; }
+
+.field-label { display: block; font-size: 0.75rem; color: rgb(var(--muted)); margin-bottom: 0.4rem; }
+.note { font-size: 0.8rem; line-height: 1.8; color: rgb(var(--muted)); }
+
+.input {
+  width: 100%; min-width: 0;
+  background: rgb(var(--bg)); color: rgb(var(--ink));
+  border: 1px solid rgb(var(--line)); border-radius: 0.375rem;
+  padding: 0.55rem 0.75rem; font-size: 0.875rem;
+}
+.input:focus { outline: none; border-color: rgb(var(--ai)); box-shadow: 0 0 0 1px rgb(var(--ai)); }
+select.input { padding-right: 2.25rem; }
+
+.btn-primary {
+  background: rgb(var(--ai)); color: rgb(var(--card)); border-radius: 0.375rem;
+  padding: 0.5rem 1.25rem; font-size: 0.875rem; letter-spacing: 0.1em;
+}
+.btn-primary:hover { filter: brightness(0.95); }
+
+/* KPI 卡片 */
+.kpi { background: rgb(var(--card)); border: 1px solid rgb(var(--line)); border-radius: 0.375rem; padding: 1.25rem 1.4rem; min-width: 0; }
+.kpi-label { font-size: 0.75rem; color: rgb(var(--muted)); letter-spacing: 0.08em; }
+.kpi-value { font-family: "Noto Serif TC", serif; font-size: 1.6rem; margin-top: 0.35rem; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+.kpi-sub { font-size: 0.72rem; color: rgb(var(--muted)); margin-top: 0.15rem; }
+.kpi-bar { height: 2px; width: 1.5rem; background: rgb(var(--ai)); margin-bottom: 0.8rem; }
+.kpi-bar.matcha { background: rgb(var(--matcha)); }
+.kpi-bar.sakura { background: rgb(var(--sakura)); }
+
+/* 側邊欄 */
+.nav-link {
+  display: flex; align-items: center; gap: 0.9rem; padding: 0.65rem 0.75rem; border-radius: 0.375rem;
+  color: rgb(var(--muted)); border-left: 2px solid transparent;
+}
+.nav-link small { display: block; font-size: 10px; letter-spacing: 0.15em; opacity: 0.8; }
+.nav-link:hover { background: rgb(var(--soft)); color: rgb(var(--ink)); }
+.nav-link.active { color: rgb(var(--ink)); background: rgb(var(--soft)); border-left-color: rgb(var(--ai)); border-radius: 0 0.375rem 0.375rem 0; }
+.nav-no { font-family: "Noto Serif TC", serif; width: 1.25rem; text-align: center; color: rgb(var(--ai)); }
+.problem-item { width: 100%; text-align: left; padding: 0.6rem 1rem; }
+.problem-item:hover { background: rgb(var(--soft)); }
+.problem-item.current { border-left: 2px solid rgb(var(--ai)); }
+
+/* 特徵多選的標籤 */
+.chip { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.3rem 0.7rem; border: 1px solid rgb(var(--line)); border-radius: 0.375rem; font-size: 0.8rem; cursor: pointer; user-select: none; }
+.chip input { accent-color: rgb(var(--ai)); }
+.chip:has(input:checked) { border-color: rgb(var(--ai)); background: rgb(var(--ai) / 0.08); }
+.chip .kind { font-size: 10px; color: rgb(var(--muted)); }
+
+/* 表格（Flowbite Table 風格，細線） */
+.table-wrap { overflow: auto; border: 1px solid rgb(var(--line)); border-radius: 0.375rem; }
+.tbl { width: 100%; font-size: 0.8rem; font-variant-numeric: tabular-nums; border-collapse: collapse; }
+.tbl th { position: sticky; top: 0; background: rgb(var(--soft)); color: rgb(var(--muted)); font-weight: 500; text-align: left; letter-spacing: 0.06em; }
+.tbl th, .tbl td { padding: 0.55rem 0.9rem; border-bottom: 1px solid rgb(var(--line)); white-space: nowrap; }
+.tbl tr:last-child td { border-bottom: 0; }
+.tbl .num { text-align: right; }
+.tbl tr.dim td { color: rgb(var(--muted)); opacity: 0.7; }
+
+/* 判定標籤 */
+.tag { display: inline-block; padding: 0.05rem 0.55rem; border-radius: 0.25rem; font-size: 0.72rem; border: 1px solid; }
+.tag.good { color: rgb(var(--matcha)); border-color: rgb(var(--matcha) / 0.5); }
+.tag.warn { color: rgb(var(--beni)); border-color: rgb(var(--beni) / 0.5); }
+.tag.info { color: rgb(var(--ai)); border-color: rgb(var(--ai) / 0.5); }
+.tag.plain { color: rgb(var(--muted)); border-color: rgb(var(--line)); }
+
+/* 預測頁：區間示意條 */
+.range-track { position: relative; height: 26px; margin-top: 0.5rem; }
+.range-pi { position: absolute; top: 9px; height: 8px; background: rgb(var(--ai) / 0.2); border-radius: 2px; }
+.range-ci { position: absolute; top: 9px; height: 8px; background: rgb(var(--ai) / 0.6); border-radius: 2px; }
+.range-dot { position: absolute; top: 4px; width: 2px; height: 18px; background: rgb(var(--ink)); }
+
+/* ApexCharts：工具提示配合主題 */
+.apexcharts-tooltip { border: 1px solid rgb(var(--line)) !important; box-shadow: none !important; }
+.apexcharts-tooltip.apexcharts-theme-light { background: rgb(var(--card)) !important; color: rgb(var(--ink)); }
+.apexcharts-tooltip.apexcharts-theme-dark { background: rgb(var(--soft)) !important; }
+.apexcharts-tooltip-title { background: rgb(var(--soft)) !important; border-bottom: 1px solid rgb(var(--line)) !important; }
+
+/* 細捲軸 */
+.table-wrap::-webkit-scrollbar, aside div::-webkit-scrollbar { width: 6px; height: 6px; }
+.table-wrap::-webkit-scrollbar-thumb, aside div::-webkit-scrollbar-thumb { background: rgb(var(--line)); border-radius: 3px; }
+
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
