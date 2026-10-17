@@ -683,6 +683,16 @@
   $("predict-form").addEventListener("input", updatePrediction);
   $("predict-form").addEventListener("submit", (e) => e.preventDefault());
 
+  // 熱力圖寬度是繪製時計算的，視窗大小改變後重畫（其他圖表由 ApexCharts 自動調整）
+  let resizeTimer = null;
+  window.addEventListener("resize", () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(() => {
+      state.dirty.overview = true;
+      renderVisibleCharts();
+    }, 200);
+  });
+
   // Tailwind（Play CDN）的樣式可能晚於第一次繪圖才套用；整頁載入後重畫一次，確保圖表寬度正確
   window.addEventListener("load", () => {
     for (const p of PAGES) state.dirty[p] = true;
