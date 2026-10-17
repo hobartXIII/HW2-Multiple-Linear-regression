@@ -1,5 +1,5 @@
 # 原始資料（約 150 MB，用 notebook 開頭的 kaggle 指令下載）
-data/
+/data/
 
 # notebook 產生的大檔（可重新產生）
 outputs/*.joblib
