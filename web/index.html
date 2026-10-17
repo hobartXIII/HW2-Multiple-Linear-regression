@@ -46,7 +46,7 @@
   <link rel="stylesheet" href="css/style.css">
 </head>
 
-<body class="bg-washi text-ink font-sans antialiased">
+<body class="bg-washi text-ink font-sans antialiased no-data no-model">
 
   <!-- ===================== 頂部導覽列 ===================== -->
   <nav class="fixed top-0 z-50 w-full h-16 bg-paper/95 border-b border-line">
@@ -130,9 +130,9 @@
           <p id="dataset-desc" class="mt-3 text-sm text-muted leading-7 max-w-3xl"></p>
         </header>
 
-        <!-- 資料來源：拖曳上傳 + 網址 -->
-        <div class="card">
-          <h2 class="card-title">資料來源</h2>
+        <!-- 自訂資料集：拖曳上傳 + 網址（只有選「自訂資料集」時顯示） -->
+        <div id="custom-card" class="card hidden">
+          <h2 class="card-title">自訂資料集<span class="card-sub">貼上 CSV 網址或上傳檔案；載入後才會顯示欄位與分析結果</span></h2>
           <div class="grid md:grid-cols-2 gap-6">
             <label id="dropzone" for="csv-file"
               class="flex flex-col items-center justify-center h-40 border border-dashed border-line rounded-md cursor-pointer hover:bg-soft transition-colors">
@@ -150,7 +150,8 @@
           </div>
         </div>
 
-        <!-- KPI -->
+        <!-- 以下內容在載入資料後才顯示 -->
+        <div class="needs-data space-y-10">
         <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6" id="kpi-data"></div>
 
         <!-- 變數設定 -->
@@ -196,6 +197,7 @@
           <!-- 窄螢幕時可左右捲動，讓每格保持足夠寬度顯示數值 -->
           <div id="corr-scroll" class="overflow-x-auto overflow-y-hidden"><div id="chart-corr"></div></div>
         </div>
+        </div><!-- /needs-data -->
       </section>
 
       <!-- ========== 二、模型結果 ========== -->
@@ -205,6 +207,8 @@
           <h1 class="page-title">模型結果</h1>
           <p class="mt-3 text-sm text-muted leading-7 max-w-3xl">80/20 隨機切分（seed 42），只用訓練集做標準化、補值與特徵選擇；以 5-fold CV RMSE 比較三種方法，再以最小平方法（OLS）估計係數。</p>
         </header>
+        <p class="empty-state">尚未建立模型：請先在「資料總覽」載入資料，並選擇目標變數與至少一個特徵。</p>
+        <div class="needs-model space-y-10">
 
         <div class="card">
           <div class="grid sm:grid-cols-3 gap-6">
@@ -250,6 +254,7 @@
             <div class="table-wrap mt-3"><table id="rank-table" class="tbl"></table></div>
           </details>
         </div>
+        </div><!-- /needs-model -->
       </section>
 
       <!-- ========== 三、評估 ========== -->
@@ -259,6 +264,8 @@
           <h1 class="page-title">評估</h1>
           <p class="mt-3 text-sm text-muted leading-7 max-w-3xl">以未參與訓練的測試集評估；信賴區間描述「同條件樣本平均值」的範圍，預測區間描述「單一新樣本」的範圍。</p>
         </header>
+        <p class="empty-state">尚未建立模型：請先在「資料總覽」載入資料，並選擇目標變數與至少一個特徵。</p>
+        <div class="needs-model space-y-10">
 
         <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6" id="kpi-eval"></div>
 
@@ -283,6 +290,7 @@
           <h2 class="card-title">線性回歸五大假設</h2>
           <div class="table-wrap"><table id="assump-table" class="tbl"></table></div>
         </div>
+        </div><!-- /needs-model -->
       </section>
 
       <!-- ========== 四、預測 ========== -->
@@ -292,7 +300,8 @@
           <h1 class="page-title">預測</h1>
           <p class="mt-3 text-sm text-muted leading-7 max-w-3xl">數值欄位預設為訓練集平均值、類別欄位預設為眾數；修改後即時更新。灰色欄位未被模型選入，不影響結果。</p>
         </header>
-        <div class="grid lg:grid-cols-[1fr_20rem] gap-6 items-start">
+        <p class="empty-state">尚未建立模型：請先在「資料總覽」載入資料，並選擇目標變數與至少一個特徵。</p>
+        <div class="needs-model grid lg:grid-cols-[1fr_20rem] gap-6 items-start">
           <form id="predict-form" class="card grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-5"></form>
           <div id="predict-out" class="card lg:sticky lg:top-24"></div>
         </div>

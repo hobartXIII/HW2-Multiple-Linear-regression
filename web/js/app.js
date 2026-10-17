@@ -26,7 +26,7 @@
   const $ = (id) => document.getElementById(id);
   const state = {
     rows: null, columns: null, schema: null, meta: null, result: null,
-    xSelected: new Set(), page: "overview", dirty: {}, problem: "flood",
+    xSelected: new Set(), page: "overview", dirty: {}, problem: "flood", loadId: 0,
   };
   const charts = {};
 
@@ -54,6 +54,31 @@
   const hideAlert = () => $("alert").classList.add("hidden");
   const setStatus = (msg) => { $("status").textContent = msg; };
 
+  /** 控制「有資料才顯示」與「有模型才顯示」的區塊（對應 CSS 的 .no-data / .no-model） */
+  function setFlags(hasData, hasModel) {
+    document.body.classList.toggle("no-data", !hasData);
+    document.body.classList.toggle("no-model", !hasModel);
+  }
+
+  /** 清空目前的資料與圖表（切換到「自訂資料集」時使用） */
+  function clearData() {
+    state.loadId++;   // 讓進行中的讀取作廢
+    state.rows = null;
+    state.result = null;
+    for (const id of Object.keys(charts)) { charts[id].destroy(); delete charts[id]; }
+    setFlags(false, false);
+    hideAlert();
+    setStatus("");
+    $("dataset-desc").textContent = "請在下方貼上 CSV 網址（已預填 50_Startups 範例）或上傳檔案；載入後才會顯示欄位與分析結果。";
+  }
+
+  function setProblemLabel(key) {
+    state.problem = key;
+    $("problem-label").textContent = key === "custom" ? "自訂資料集" : PRESETS[key].label;
+    document.querySelectorAll(".problem-item").forEach((b) => b.classList.toggle("current", b.dataset.problem === key));
+    $("custom-card").classList.toggle("hidden", key !== "custom");
+  }
+
   // ------------------------------------------------------------ 讀取資料
   /** GitHub 一般網址自動轉成 raw 網址 */
   function toRawUrl(url) {
@@ -64,6 +89,7 @@
   function parseCsv(src, meta) {
     hideAlert();
     setStatus("讀取資料中…");
+    const loadId = ++state.loadId;   // 只採用最新一次讀取的結果
     Papa.parse(src, {
       download: typeof src === "string",
       header: true,
@@ -71,6 +97,7 @@
       dynamicTyping: false,
       transformHeader: (h) => h.trim(),
       complete: (res) => {
+        if (loadId !== state.loadId) return;
         const columns = (res.meta.fields || []).filter((f) => f !== "");
         if (!res.data.length || columns.length < 2) {
           setStatus("");
@@ -80,6 +107,7 @@
         setData(res.data, columns, meta);
       },
       error: (err) => {
+        if (loadId !== state.loadId) return;
         setStatus("");
         showAlert(`無法讀取資料（${err.message || err}）。網址可能不存在，或該網站不允許跨網域讀取（CORS）；` +
           "請改用 GitHub raw 連結，或下載後用拖曳上傳。");
@@ -96,16 +124,15 @@
   }
 
   function selectProblem(key) {
-    state.problem = key;
-    $("problem-label").textContent = key === "custom" ? "自訂資料集" : PRESETS[key].label;
-    document.querySelectorAll(".problem-item").forEach((b) => b.classList.toggle("current", b.dataset.problem === key));
+    setProblemLabel(key);
     try { FlowbiteInstances.getInstance("Dropdown", "problem-menu").hide(); } catch (e) { /* 尚未初始化時略過 */ }
+    setQuery({ problem: key });
     if (key === "custom") {
+      // 自訂資料集：先清空，等使用者載入網址或上傳檔案
+      clearData();
       showPage("overview");
-      loadUrl($("csv-url").value);
       return;
     }
-    setQuery({ problem: key });
     const p = PRESETS[key];
     parseCsv(p.url, { label: p.url.split("/").pop(), desc: p.desc, source: p.source, target: p.target });
   }
@@ -125,6 +152,7 @@
     resetX();
     state.desc = describe(rows, state.schema);
     $("k").value = "";
+    setFlags(true, false);
     runModel();
   }
 
@@ -167,7 +195,11 @@
     hideAlert();
     const features = [...state.xSelected];
     if (!features.length) {
+      state.result = null;
+      setFlags(true, false);
       renderOverview();
+      state.dirty.overview = true;
+      renderVisibleCharts();
       showAlert("請至少選擇一個候選特徵。");
       return;
     }
@@ -184,6 +216,7 @@
         });
         res.noSelection = method === "none";
         state.result = res;
+        setFlags(true, true);   // 先顯示區塊，圖表才量得到寬度
         updateKOptions(res);
         renderOverview();
         renderModel(res);
@@ -196,6 +229,8 @@
         setStatus(`${state.meta.label} · 訓練 ${res.nTrain.toLocaleString()} 筆、測試 ${res.nTest.toLocaleString()} 筆 · 計算 ${res.ms} ms${sampled}${dropped}`);
       } catch (e) {
         console.error(e);
+        state.result = null;
+        setFlags(true, false);
         renderOverview();
         setStatus("");
         showAlert(`無法建立模型：${e.message}`);
@@ -573,7 +608,8 @@
   /** 隱藏中的頁面無法量測寬度，所以圖表只在頁面顯示時才繪製 */
   function renderVisibleCharts() {
     const p = state.page;
-    if (!state.result || !state.dirty[p]) return;
+    // 總覽頁的熱力圖只需要資料；其他頁需要模型結果
+    if (!state.dirty[p] || (p === "overview" ? !state.rows : !state.result)) return;
     state.dirty[p] = false;
     for (const f of CHARTS[p]) f();
   }
@@ -619,16 +655,12 @@
 
   $("url-form").addEventListener("submit", (e) => {
     e.preventDefault();
-    state.problem = "custom";
-    $("problem-label").textContent = "自訂資料集";
     loadUrl($("csv-url").value);
   });
 
   function loadFile(file) {
     if (!file) return;
-    state.problem = "custom";
-    $("problem-label").textContent = "自訂資料集";
-    setQuery({});
+    setQuery({ problem: "custom" });
     parseCsv(file, { label: file.name, desc: "上傳的資料集。" });
   }
   $("csv-file").addEventListener("change", (e) => { loadFile(e.target.files[0]); e.target.value = ""; });
@@ -661,11 +693,12 @@
   const q = new URLSearchParams(location.search);
   showPage(location.hash.slice(1) || "overview");
   if (q.get("url")) {
-    $("csv-url").value = q.get("url");
-    state.problem = "custom";
-    $("problem-label").textContent = "自訂資料集";
+    // 網址帶 ?url=：直接以自訂資料集載入
+    setProblemLabel("custom");
+    clearData();
     loadUrl(q.get("url"));
   } else {
-    selectProblem(PRESETS[q.get("problem")] ? q.get("problem") : "flood");
+    const key = q.get("problem");
+    selectProblem(key === "custom" || PRESETS[key] ? key : "flood");
   }
 })();
