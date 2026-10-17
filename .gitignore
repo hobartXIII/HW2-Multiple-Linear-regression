@@ -13,3 +13,7 @@ readme.html
 web/tests/_*
 __pycache__/
 .ipynb_checkpoints/
+
+# 原始對話匯出（含登入授權碼，不公開）與繳交用 zip
+report/*_conversation.txt
+*.zip
