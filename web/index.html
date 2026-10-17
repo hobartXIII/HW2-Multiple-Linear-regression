@@ -193,7 +193,8 @@
 
         <div class="card">
           <h2 class="card-title">相關係數熱力圖<span class="card-sub" id="corr-sub"></span></h2>
-          <div id="chart-corr"></div>
+          <!-- 窄螢幕時可左右捲動，讓每格保持足夠寬度顯示數值 -->
+          <div id="corr-scroll" class="overflow-x-auto overflow-y-hidden"><div id="chart-corr"></div></div>
         </div>
       </section>
 

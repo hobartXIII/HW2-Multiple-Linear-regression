@@ -420,10 +420,10 @@
       $("corr-sub").textContent = "數值欄位 Pearson r";
     }
     const n = cols.length;
-    // 格子夠寬才在格內顯示數值（手機上格子太窄時只保留滑鼠提示）
-    const cellW = ($("chart-corr").clientWidth - 130) / n;
-    const showLabels = cellW >= 30;
+    // 每格至少 36px 以容納數值；容器不夠寬時圖表加寬、由外層左右捲動
+    const width = Math.max($("corr-scroll").clientWidth, 130 + n * 36);
     const o = base(Math.max(280, n * 32 + 110));
+    o.chart.width = width;
     Object.assign(o, {
       chart: { ...o.chart, type: "heatmap" },
       // ApexCharts 熱力圖由下往上畫，反轉後第一個欄位在最上方
@@ -446,7 +446,7 @@
       },
       stroke: { width: 1, colors: [color("--card")] },
       dataLabels: {
-        enabled: showLabels,
+        enabled: true,
         formatter: (v) => (Math.abs(v) < 0.005 ? 0 : v).toFixed(2),   // 避免出現 -0.00
         style: { fontSize: n > 12 ? "9px" : "10px", fontWeight: 400, colors: [color("--ink")] },
       },
