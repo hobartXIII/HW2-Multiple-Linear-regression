@@ -43,7 +43,7 @@
 - 四個頁面：資料總覽（敘述統計、相關係數熱力圖）、模型結果（特徵選擇、係數）、評估（預測圖＋CI/PI、殘差圖、五大假設）、預測（即時預測與區間）。
 - 網址參數：`?problem=flood`、`?problem=student`、`?url=<CSV 網址>`。
 - 網頁的 Flood 資料為 20,000 筆抽樣，且為另一次隨機切分，數字與 notebook 略有差異；報告以 notebook 為準。
-- 正確性驗證：`web/tests/compare_statsmodels.py` 以相同切分比對 statsmodels，係數、標準誤、p 值、CI/PI、R²、DW、JB、BP、VIF 誤差皆 < 1e-12。
+- 正確性驗證：`web/tests/compare_statsmodels.py` 以相同切分比對 statsmodels，係數、標準誤、p 值、CI/PI、R²、DW、JB、BP、VIF 的最大相對誤差約 2e-12（測試門檻 1e-6）。
 
 ## 重現方式
 

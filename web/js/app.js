@@ -348,7 +348,8 @@
     const big = res.nTrain > 5000 ? "；樣本數大時微小偏差也會顯著" : "";
     const rows = [
       ["一、線性 Linearity", "殘差圖", "—", "殘差隨機分布於 0 兩側", '<span class="tag plain">看圖</span>'],
-      ["二、獨立性 Independence", "Durbin-Watson", fmt(d.dw, 4), "約 1.5 – 2.5", tag(d.dw > 1.5 && d.dw < 2.5, false)],
+      // 資料是隨機切分的橫斷面資料，列的順序沒有時間意義，DW 只能當參考
+      ["二、獨立性 Independence", "Durbin-Watson", fmt(d.dw, 4), "列的順序無時間意義時僅供參考；獨立性由隨機抽樣保證", '<span class="tag plain">參考</span>'],
       ["三、同質變異 Homoscedasticity", "Breusch-Pagan p 值", fmtP(d.bpP), `> 0.05${big}`, tag(d.bpP > 0.05, true)],
       ["四、常態性 Normality", `Jarque-Bera p 值（偏態 ${fmt(d.skew, 3)}、峰度 ${fmt(d.kurt, 3)}）`, fmtP(d.jbP), `> 0.05${big}`, tag(d.jbP > 0.05, true)],
       ["五、無多重共線性", "最大 VIF", fmt(d.maxVif, 4), "< 5（< 10 尚可）", tag(d.maxVif < 5, d.maxVif < 10)],
