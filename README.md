@@ -1,9 +1,11 @@
 # HW2：多元線性回歸（Multiple Linear Regression）
 
-5115056022 · 依 CRISP-DM 流程，以兩個 Kaggle 資料集完成多元線性回歸的特徵選擇、模型評估與預測區間分析。
+邱勇嘉 · 5115056022 · 依 CRISP-DM 流程，以兩個 Kaggle 資料集完成多元線性回歸的特徵選擇、模型評估與預測區間分析。
 
 - **線上儀表板（GitHub Pages）**：https://hobartxiii.github.io/HW2-Multiple-Linear-regression/
 - **主程式**：[`5115056022_hw2.ipynb`](5115056022_hw2.ipynb)（完整分析，所有輸出已保留在 notebook 中）
+- **報告**：[`report/5115056022_hw2_report.pdf`](report/5115056022_hw2_report.pdf)（CRISP-DM 分析流程、GPT 輔助內容、NotebookLM 研究摘要、網路主流解法比較；附錄為 GPT 對話過程）
+- **GPT 對話過程**：[`report/5115056022_hw2_GPT對話過程.pdf`](report/5115056022_hw2_GPT對話過程.pdf)（ChatGPT 與 Claude Code 的對話，與報告附錄相同）
 
 ## 資料集
 
