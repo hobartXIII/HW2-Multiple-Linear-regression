@@ -17,3 +17,10 @@ __pycache__/
 # 原始對話匯出（含登入授權碼，不公開）與繳交用 zip
 report/*_conversation.txt
 *.zip
+
+# 報告製作過程的中間檔與工具腳本（只上傳最終 PDF）
+report/chatgpt_share.html
+report/report.html
+report/notebooklm_sources/
+report/figures/
+report/*.py
